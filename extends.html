@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<script>
+    class Player {
+        constructor(name, hp) {
+            console.log("player");
+            this.name = name;
+            this.hp = hp;
+        }
+        fight() {
+            this.hp -= 2;
+        }
+        rest() {
+            this.hp++;
+        }
+        report() {
+            console.log(this.name + ":" + this.hp);
+        }
+    }
+    class Wizard extends Player{
+        constructor(name,hp){
+            super(name,hp);
+            this.mp = 100;
+            console.log("wizard");
+        }
+        heal(){
+            this.mp-=5;
+            this.hp+=10;
+        }
+        report(){
+            console.log(this.name+":"+this.hp+"/"+this.mp);
+        }
+    }
+    let player = new Player("ply", 100);
+    player.report();
+    let wizard = new Wizard("pp",30);
+    wizard.heal();
+    wizard.report();
+    console.log(wizard);
+    let prow = Object.getPrototypeOf(wizard);
+    console.log(prow);
+    
+    //自訂event
+    document.addEventListener("click",function(){
+       console.log("Mine!"); 
+    });
+    
+    let e = new Event("click");
+    document.dispatchEvent(e);
+</script>
+
+
+
+<body>
+
+
+
+</body>
+</html>

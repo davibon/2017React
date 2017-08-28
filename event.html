@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<script>
+    window.onload = function() {
+//        let inner = document.getElementById("inner");
+//        let outer = document.getElementById("outer");
+//        document.body.addEventListener("click", function() {
+//            console.log("body i am here");
+//        }, true /* t:capture, f:bubble */ );
+//        outer.addEventListener("click", function(e) {
+//            e.stopPropagation();
+//            console.log("outer i am here");
+//        }, true /* t:capture, f:bubble */ );
+//        inner.addEventListener("click", function() {
+//            console.log("i am here");
+//        }, true /* t:capture, f:bubble */ );
+//
+//        outer.addEventListener("click", function() {
+//            console.log("outer i am here");
+//        }, false /* t:capture, f:bubble */ );
+//        inner.addEventListener("click", function() {
+//            console.log("i am here");
+//        }, false /* t:capture, f:bubble */ );
+//        document.body.addEventListener("click", function() {
+//            console.log("body i am here");
+//        }, false /* t:capture, f:bubble */ );
+        let link = document.getElementById("link");
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
+        });
+        document.addEventListener("mousedown",function(e){
+            e.preventDefault();
+        });
+    };
+
+</script>
+
+<body>
+    <div id="outer" style="width:200px; height:180px;background-color:red">
+        <button id="inner">Click</button>
+
+    </div>
+
+    <a id="link" href="http://www.google.com">Google</a>
+</body>
+
+</html>

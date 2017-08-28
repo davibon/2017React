@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<script>
+let items;
+window.onload = function(){
+    let list = document.querySelectorAll("ul>li");
+    items = [];
+    for(let i=0;i<list.length;i++){
+        items.push(list[i]);
+    }
+};
+function filterList(text){
+    //filter
+    let filteredItem = items.filter(function(elem){
+        let result = elem.innerHTML.indexOf(text) > -1;
+        return result;
+    });
+    //更新畫面
+    let fList = document.getElementById("list");
+    fList.innerHTML = "";
+    for(let i=0;i<filteredItem.length;i++){
+        fList.appendChild(filteredItem[i]);    
+    }
+}
+    
+</script>
+<body>
+
+<input type="text" oninput="filterList(this.value)">
+<ul id="list">
+    <li>today is</li>
+    <li>tto is a bad.</li>
+    <li>roday is hola.</li>
+    <li>lkikej is good.</li>
+</ul>
+
+</body>
+</html>

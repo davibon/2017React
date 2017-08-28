@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<script>
+    function getData() {
+        return new Promise(function(resolve,reject) {
+            setTimeout(function() {
+                //let data = "Hello";
+                let data = Math.random();
+                if(data>0.5){
+                    resolve(data);
+                }else{
+                   reject("error!"); 
+                }
+                
+            }, 2000);
+
+        });
+    }
+
+
+    getData().then(function(result){
+        console.log(result);
+        return result*10;
+    },function(error){
+        console.log(error);
+    }).then(function(result){
+        console.log(result);
+    });
+
+</script>
+
+<body>
+
+
+
+</body>
+
+</html>

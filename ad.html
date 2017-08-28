@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<style type="text/css">
+    .group {
+        width: 400px;
+        height: 400px;
+        border: 1px solid black;
+        display: inline-block;
+        vertical-align: top;
+        margin: 10px;
+    }
+    
+    .group>.ad {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        display: inline-block;
+        vertical-align: top;
+        margin: 5px;
+    }
+
+</style>
+<script>
+    let count = 1;
+
+    function add() {
+        //動態產生 div 物件
+        let ad = document.createElement("div");
+        ad.className = "ad";
+        ad.textContent = count;
+        ad.addEventListener("mousedown", drag);
+        //放在group裡面
+        let group = document.querySelectorAll(".group")[0];
+        group.appendChild(ad);
+        count++;
+    }
+
+    function drag(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        this.style.position = "relative";
+        let start = {
+            x: e.clientX,
+            y: e.clientY
+        };
+        let check = (group) => {
+            let groupBound = group.getBoundingClientRect();
+            let adBound = this.getBoundingClientRect();
+            let result = adBound.left > groupBound.left &&
+                adBound.right < groupBound.right &&
+                adBound.top > groupBound.top &&
+                adBound.bottom < groupBound.bottom;
+            if (result) {
+                return group;
+            } else {
+                return null;
+            }
+        }
+        let move = (e) => {
+            this.style.left = (e.clientX - start.x) + "px";
+            this.style.top = (e.clientY - start.y) + "px";
+        };
+        let end = (e) => {
+            let groups = document.querySelectorAll(".group");
+            let targetGroup = null;
+            for (let i = 0; i < groups.length; i++) {
+                targetGroup = check(groups[i]);
+                if (targetGroup !== null) {
+                    if (targetGroup !== this.parentNode) {
+                        targetGroup.appendChild(this);
+                        break;
+                    }
+                }
+            }
+
+
+            this.style.position = "static";
+            this.style.left = this.style.top = "auto";
+            document.removeEventListener("mousemove", move);
+            document.removeEventListener("mouseup", end);
+        }
+        document.addEventListener("mousemove", move);
+        document.addEventListener("mouseup", end);
+    }
+
+</script>
+
+<body>
+    <button onclick="add();">Add</button>
+    <br>
+    <div class="group">
+    </div>
+    <div class="group"></div>
+</body>
+
+</html>

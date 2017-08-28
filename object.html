@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Class and Object</title>
+</head>
+<script>
+    class Player {
+        constructor(name,hp) {
+            console.log("call call call");
+            this.name = name;
+            this.hp = hp;
+        }
+        fight() {
+            this.hp -= 2;
+        }
+        rest() {
+            this.hp++;
+        }
+        report() {
+            console.log(this.name + ":" + this.hp);
+        }
+    }
+    let player = new Player("Charile",100);
+    player.fight();
+    player.rest();
+    player.report();
+
+    //console.log(player);
+
+    //    //建構函式
+    //    function Point(x, y) {
+    //        this.x = x;
+    //        this.y = y;
+    //    }
+    //    let p1 = new Point(3, 4);
+    //    let p2 = new Point(0, 5);
+    //    console.log(p1);
+
+</script>
+
+<body>
+
+
+
+</body>
+
+</html>

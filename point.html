@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<script>
+    class Point {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    class Line {
+        constructor(p1, p2) {
+            this.p1 = p1;
+            this.p2 = p2;
+        }
+    }
+    class Geometry {
+        static distance(p1, p2) {
+            let result = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+            console.log(result);
+        }
+        static length(line) {
+            let result = Math.sqrt(Math.pow(line.p2.x - line.p1.x, 2) + Math.pow(line.p2.y - line.p1.y, 2));
+            console.log(result);
+        }
+    }
+
+    let p1 = new Point(3, 4);
+    let p2 = new Point(6, 6);
+    Geometry.distance(p1, p2);
+    let line = new Line(p1,p2);
+    Geometry.length(line);
+
+</script>
+
+<body>
+
+
+
+</body>
+
+</html>

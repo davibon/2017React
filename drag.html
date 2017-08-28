@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+</head>
+<script>
+    window.onload = function() {
+        let box = document.getElementById("box");
+        box.addEventListener("mousedown", drag);
+    };
+
+    function drag(e) {
+        //初始化拖曳功能
+        e.preventDefault(); e.stopPropagation();
+        let elem = this;
+        let move =function(e){
+            e.preventDefault(); e.stopPropagation();
+            console.log(e.clientX+","+e.clientY);
+            elem.style.left=e.clientX+"px";
+            elem.style.top=e.clientY+"px";
+        }
+        let up = function(e){
+            console.log("end");
+        document.removeEventListener("mousemove",move);
+        document.removeEventListener("mouseup",up)            
+        }
+        document.addEventListener("mousemove",move);
+        document.addEventListener("mouseup",up)
+    }
+</script>
+
+<body>
+
+    <div id="box" style="position:absolute;top:100px;left:100px;width:100px;height:100px;background-color:red">hello</div>
+
+</body>
+
+</html>
