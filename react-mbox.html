@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <style type="text/css">
+        .box {
+            width: 20px;
+            height: 20px;
+            background-color: darkcyan;
+            position: absolute;
+        }
+
+    </style>
+    <script>
+        class Box extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    x: props.x,
+                    y: props.y
+                }
+            }
+            render() {
+                return React.createElement("div", {
+                    className: "box",
+                    style: {
+                        left: this.state.x + "px",
+                        top: this.state.y + "px"
+                    }
+                });
+            }
+            componentDidMount() {
+                this.moveId = window.setInterval(() => {
+                    this.setState((currentState, currentProps) => {
+                        if (currentState.x > 500) {
+                            window.clearInterval(this.moveId);
+                        } else {
+                            return {
+                                x: currentState.x + currentProps.vx,
+                                y: currentState.y + currentProps.vy
+                            };
+                        }
+                    });
+                }, 10);
+            }
+            componentWillUnmount() {
+                window.clearInterval(this.moveId);
+            }
+        }
+        window.onload = function() {
+            let elem = React.createElement(Box, {
+                x: 100,
+                y: 100,
+                vx: 1,
+                vy: 2
+            });
+            ReactDOM.render(elem, document.body);
+
+        }
+
+    </script>
+</head>
+
+<body>
+
+
+
+</body>
+
+</html>

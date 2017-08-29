@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Untitled Document</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <style type="text/css">
+        .head {
+            color: rebeccapurple;
+        }
+
+    </style>
+    <script>
+        class MyHead extends React.Component {
+
+            render() {
+                console.log(this.props);
+                return React.createElement("h" + this.props.level, {
+                    className: "head"
+                }, "hello");
+            };
+
+        }
+        class MyHeadList extends React.Component {
+            constructor(prpos) {
+                super(prpos);
+                this.state = {
+                    maxLevel: prpos.start
+                };
+                /*                window.setTimeout(() => {
+                                    //                    this.setState({
+                                    //                        maxLevel: 3
+                                    //                    });
+                                    this.setState(function(currentState, currentProps) {
+                                        return {
+                                            maxLevel: currentState.maxLevel +1
+                                        };
+                                    });
+                                }, 2000);*/
+            }
+            render() {
+                let childElems = [];
+                let childElem;
+                for (let i = 1; i < this.state.maxLevel; i++) {
+                    childElem = React.createElement(MyHead, {
+                        level: i
+                    });
+                    childElems.push(childElem);
+                }
+                return React.createElement("div", {
+                    className: "list"
+                }, childElems);
+            }
+            componentDidMount() {
+                this.intervalId = window.setInterval(() => {
+                    this.setState((currentState,currentPros) => {
+                        if (currentState.maxLevel > currentPros.end) {
+                            return currentState;
+                        } else {
+                            return {
+                                maxLevel: currentState.maxLevel + 1
+                            };
+
+                        }
+                    })
+                }, 1000);
+            }
+            componentWillUnmount() {
+                window.clearInterval(this.intervalId);
+            }
+        }
+        window.onload = function() {
+            // 1. create React Element
+            let elem = React.createElement(MyHeadList,{start:4,end:6});
+            // 2. draw
+            ReactDOM.render(elem, document.body);
+        };
+
+        //        //define React Component
+        //        function MyHead() {
+        //            return React.createElement("h1", {
+        //                className: "head"
+        //            }, "hello");
+        //        }
+
+        //        window.onload = function() {
+        //            // 1. create React Element
+        //            let elem = React.createElement("h1", {
+        //                className: "head"
+        //            }, "hello");
+        //            // 2. draw
+        //            ReactDOM.render(elem, document.body);
+        //
+        //        };
+
+    </script>
+</head>
+
+<body>
+
+
+
+</body>
+
+</html>
