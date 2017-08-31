@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>JSX</title>
+    <style type="text/css">
+        .switch{
+            width: 60px;
+            height: 30px;
+            background-color: gainsboro;
+            border-radius: 15px;
+            transition: background-color 0.5s;
+        }
+        .switch>.btn{
+            width: 30px;
+            height: 30px;
+            border-radius: 15px;
+            background-color: darkgrey;
+            transition: margin-left 0.5s,background-color 0.5s;
+        }
+        .switch-on{
+            background-color: greenyellow;
+        }
+        .switch-on>.btn{
+            margin-left: 30px;
+            background-color: green;
+        }
+        .scroll{
+            width: 100px;
+            height: 100px;
+            overflow: auto;
+            border: 1px solid black;
+        }
+    </style>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+</head>
+<script type="text/babel">
+class Button extends React.Component{
+    render(){
+        return <div className="btn"></div>;
+    }
+}
+class Switch extends React.Component{
+    constructor(props){
+        super(props);
+        this.state = {on:false};
+    }
+    render(){
+        let name;
+        if(this.state.on){
+            name = "switch switch-on";
+        }else{
+            name = "switch";
+        }
+        return <div onClick={this.update.bind(this)} className={name}><Button/></div>;
+    }
+    update(){
+        this.setState((currentState)=>({on:!currentState.on}));
+    }
+    componentDidUpdate(){
+        this.props.callback(this.state.on);
+    }
+}
+    window.onload = function() { 
+        ReactDOM.render(<Switch callback={changeColor} />,document.getElementById("switch-1")); 
+        ReactDOM.render(<Switch callback={changeSize} />,document.getElementById("switch-2")); 
+    }
+    
+    function changeColor(choice){
+        if(choice){
+            document.body.style.backgroundColor="blue";
+        }else{
+            document.body.style.backgroundColor="black";
+        }
+    }
+
+    function changeSize(choice){
+        console.log(choice);
+    }
+
+</script>
+
+<body>
+
+    <div id="switch-1"></div>
+    <div id="switch-2"></div>
+    <div class="scroll">
+        <div>2</div>
+        <div>3</div>
+        <div>1</div>
+        <div>5</div>
+        <div>s</div>
+        <div>2pbjfj;sjda;v;ajv;aeoeo</div>
+        <div>w</div>
+        <div>q</div>
+        <div>1</div>
+        <div>5</div>
+        <div>333</div>
+    </div>
+</body>
+
+</html>

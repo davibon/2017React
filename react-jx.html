@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>JSX</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+<!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+</head>
+<script type="text/babel">
+    class MyHead extends React.Component {
+        render() {
+            //return React.createElement("div",null,"hello");
+            return <div style={{color:this.props.color}}> Hello  L{this.props.level}< /div>;
+        }
+    }
+    class MyHeadList extends React.Component{
+        render(){
+            let heads=[];
+            for(let i=1;i<5;i++){
+                heads.push(<MyHead level={i} color="blue"/>)
+            }
+            return <div onMouseDown={this.update.bind(this)}>{heads}</div>
+        }
+        update(e){
+            console.log("here click" + e.clientX);
+            console.log(this);
+        }            
+    }
+    window.onload = function() {
+        ReactDOM.render(<MyHeadList / >, document.body);
+    }
+
+</script>
+
+<body>
+
+
+
+</body>
+
+</html>
