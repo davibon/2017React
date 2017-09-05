@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>React Form</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+<!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+</head>
+<script type="text/babel">
+class MyForm extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={textInput:"", textareaInput:"",selectInput:"female"};
+    }
+    render(){
+        return <form onSubmit={this.handleSubmit.bind(this)}>
+            <input type="text" value={this.state.textInput} onChange={this.handleTextChange.bind(this)}/>
+            <textarea value={this.state.textareaInput} onChange={this.handleTextareaChange.bind(this)}></textarea>
+            <select value={this.state.selectInput}
+               onChange={this.handleSelectChange.bind(this)}>
+                <option value="male">男</option>
+                <option value="female">女</option>
+            </select>
+            <input type="submit" value="Submit" />
+        </form>;
+    }
+    handleTextChange(e){
+        this.setState({textInput:e.currentTarget.value});
+    }
+    handleTextareaChange(e){
+        this.setState({textareaInput:e.currentTarget.value});
+    }
+    handleSelectChange(e){
+        this.setState({selectInput:e.currentTarget.value});
+    }
+    handleSubmit(e){
+        e.preventDefault();
+        console.log(this.state.textareaInput);
+    }    
+}
+window.addEventListener("load",()=>{
+    ReactDOM.render(<MyForm/>, document.body);
+});
+</script>
+
+<body>
+
+
+
+</body>
+
+</html>

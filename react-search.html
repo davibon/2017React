@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>React Search List</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+<!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+</head>
+<script type="text/babel">
+class SearchBox extends React.Component{
+    render(){
+        return <input type="text" onInput={this.props.callback}/>;
+    }
+}
+class ListBox extends React.Component{
+    render(){
+        let list=[];
+        for(let i=0; i<this.props.data.length;i++){
+            if(this.props.filter===null||this.props.data[i].indexOf(this.props.filter)>-1){
+                list.push(<li>{this.props.data[i]}</li>);
+            }
+        }
+        return <ul>{list}</ul>;
+    }
+}
+class SearchList extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={ data:null,filter:null};
+    }
+    render(){
+        if(this.state.data===null){
+            return <div>Loading</div>;
+        }else{
+        return <div>
+            <SearchBox callback={this.update.bind(this)}/>
+            <ListBox data={this.state.data} filter={this.state.filter}/>
+        </div>;
+        }
+    }
+    update(e){
+        //console.log(e.currentTarget.value);
+        this.setState({filter:e.currentTarget.value});
+    }
+    componentDidMount(){
+/*        let req =new XMLHttpRequest();
+        req.open("get","https://training.pada-x.com/resources/javascript-es6-react/data");
+        req.onload=()=>{
+            this.setState({data: JSON.parse(req.responseText)});
+        };
+        req.send();*/
+        Data.load("get","https://training.pada-x.com/resources/javascript-es6-react/data",
+        (responseText)=>{
+            this.setState({data: JSON.parse(responseText)});
+        }
+        );
+    }
+}
+class Data{
+    static load(method,src,callback){
+        let req =new XMLHttpRequest();
+        req.open(method,src);
+        req.onload=()=>{
+            callback(req.responseText);
+        };
+        req.send();
+    }
+}
+window.addEventListener("load",()=>{
+    ReactDOM.render(<SearchList/>, document.body);
+});
+</script>
+
+<body>
+
+
+
+</body>
+
+</html>
