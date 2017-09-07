@@ -76,6 +76,22 @@ class Board extends React.Component{
             winner:null
         };
     }
+/*  update: 
+    componentWillReceiveProps()
+    componentUpdate()
+    render()
+    componentDidUpdate()*/
+    componentWillReceiveProps(newProps){
+        //透過props更新,去調整props
+        if(newProps.count > this.props.count){
+            this.setState({
+            circle:0,
+            marks:[-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            winner:null
+            });
+        }
+        
+    }
     render(){
         let cells=[];
         for(let i=0;i<9;i++){
@@ -122,8 +138,23 @@ class Board extends React.Component{
         return null;
     }
 }
+class Game extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={count:1};
+    }
+    render(){
+        return <div>
+        <Board count={this.state.count}/>
+            <button onClick={this.restart.bind(this)}>Restart</button>
+        </div>;
+    }
+    restart(){
+        this.setState((currentState)=>({count:currentState.count+1}));
+    }
+}
 window.addEventListener("load",()=>{
-    ReactDOM.render(<Board/>, document.body);
+    ReactDOM.render(<Game/>, document.body);
 });
 </script>
 </head>
