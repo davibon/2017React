@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>React Game</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+<!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<style type="text/css">
+    .board{
+        border: 5px solid black;
+        width: 300px;
+        height: 300px;
+        margin:50px auto;
+        position: relative;
+    }
+    .board>.cell{
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        box-sizing: border-box;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 100px;
+        font-size: 65px;
+        font-weight: bold;
+    }
+    .board>.line{
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        left: 0px;
+        top:0px;
+    }
+</style>
+
+<script type="text/babel">
+class Cell extends React.Component{
+    render(){
+        let text = "";
+        if(this.props.mark===0){
+            text = "O";
+        }else if(this.props.mark === 1){
+            text = "X";
+        }
+        return <div className="cell" onClick={this.update.bind(this)}>{text}</div>;
+    }
+    update(){
+        this.props.update(this.props.index);
+    }
+}
+class Line extends React.Component{
+    render(){
+        
+        let startX=this.props.startIndex%3;
+        let startY=Math.floor(this.props.startIndex/3);
+        let endX = this.props.endIndex%3;
+        let endY = Math.floor(this.props.endIndex/3);
+        return <svg className="line"><line 
+        x1={startX*100+50} 
+        y1={startY*100+50} 
+        x2={endX*100+50} 
+        y2={endY*100+50} stroke="red" 
+        strokeWidth="5" /></svg>; 
+    }
+}
+class Board extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            circle:0,
+            marks:[-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            winner:null
+        };
+    }
+    render(){
+        let cells=[];
+        for(let i=0;i<9;i++){
+            cells.push(<Cell index={i} mark={this.state.marks[i]} 
+            update={this.update.bind(this)}/>);
+        }
+        if(this.state.winner!=null){
+            cells.push(<Line startIndex={this.state.winner.startIndex}
+             endIndex={this.state.winner.endIndex} />);
+        }
+        return <div className="board">{cells}</div>;
+    }
+    update(index){
+        if(this.state.winner===null&&this.state.marks[index]===-1){
+        this.setState((currentState,currentProps)=>{
+            currentState.marks[index]=currentState.circle%2;
+            return {
+                circle:currentState.circle+1,
+                marks:currentState.marks,
+                winner:this.checkWinner(currentState.marks)
+            };            
+        });
+        }
+    }
+    checkWinner(marks){
+        //偵測水平
+        for(let y=0;y<3;y++){
+            if(marks[y*3]!==-1&&marks[y*3]===marks[y*3+1]&&marks[y*3+1]===marks[y*3+2]){
+                return {mark:marks[y*3],startIndex:y*3,endIndex:y*3+2};
+            }
+        }
+        //偵測垂直
+        for(let x=0;x<3;x++){
+            if(marks[0*3+x]!==-1&&marks[0*3+x]===marks[1*3+x]&&marks[1*3+x]===marks[2*3+x]){
+                return {mark:marks[0*3+x],startIndex:0*3+x,endIndex:2*3+x};
+            }           
+        }       
+        //偵測斜線
+        if(marks[0]!==-1&&marks[0]===marks[4]&&marks[4]===marks[8]){
+            return {mark:marks[0],startIndex:0,endIndex:8};
+        }else if(marks[2]!==-1&&marks[2]===marks[4]&&marks[4]===marks[6]){
+           return {mark:marks[2],startIndex:2,endIndex:6};
+        }
+        return null;
+    }
+}
+window.addEventListener("load",()=>{
+    ReactDOM.render(<Board/>, document.body);
+});
+</script>
+</head>
+<body>
+
+
+
+</body>
+
+</html>
