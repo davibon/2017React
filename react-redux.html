@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>React-Redux</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/redux@3.7.2/dist/redux.min.js"></script>
+    <script type="text/babel">
+    class SearchList extends React.Component{
+        constructor(props){
+            super(props);
+            //this.state={data:["olllllla","nooooo1"],filter:""};
+            this.state = store.getState().search;
+        }
+        render(){
+            let list=[];
+            for(let i =0;i<this.state.data.length;i++){
+                if(this.state.data[i].indexOf(this.state.filter)>-1){
+                    list.push(<div>{this.state.data[i]}</div>);
+                }
+            }
+            return <div>
+                <input type="text" onInput={this.input}/>
+                {list}
+            </div>;
+        }
+        input(e){
+            store.dispatch({type:"ChangeFilter",filter:e.currentTarget.value});
+        }
+        update(){
+            this.setState(store.getState().search);
+        }
+        componentDidMount(){
+            this.unsubscribe=store.subscribe(this.update.bind(this));
+        }
+        componentWillUnmount(){
+            this.unsubscribe();
+        }        
+    }
+    class MyList extends React.Component{
+        constructor(props){
+            super(props);
+            this.state = store.getState().my;
+        }
+        render(){
+            let items=[];
+            for(let i=0; i<this.state.max;i++){
+                items.push(<div>List Item {i}</div>);
+            }
+            return <div onClick={this.click}>{items}</div>;
+        }
+        click(){
+            store.dispatch({type:"ChangeMax",max:10});
+        }
+        update(){
+            this.setState(store.getState().my);
+        }
+        componentDidMount(){
+            this.unsubscribe=store.subscribe(this.update.bind(this));
+        }
+        componentWillUnmount(){
+            this.unsubscribe();
+        }
+    }
+    class AllList extends React.Component{
+        render(){
+            return <div>
+                <MyList />
+                <hr/>
+                <SearchList/>
+            </div>;
+            
+        }
+    }
+    let store;
+    let myReducer=function(state,action){
+        switch(action.type){
+           case "ChangeMax":
+                return Object.assign({},state,{max:action.max});
+            default:
+                return state;           
+        }
+    }
+    let searchReducer=function(state,action){
+        switch(action.type){
+           case "ChangeFilter":
+                return Object.assign({},state,{filter:action.filter});
+            default:
+                return state;           
+        }        
+    }    
+    let reducer = function(state,action){
+        switch(action.type){
+            case "ChangeMax":
+            case "ChangeFilter":
+                return {
+                    my:myReducer(state.my,action),
+                    search:searchReducer(state.search,action)
+                }
+/*            case "ChangeMax":
+                return Object.assign({},state, {
+                    my:Object.assign({},state.my,{max:action.max})
+                });
+            case "ChangeFilter":
+                return Object.assign({}, state,{
+                   search:Object.assign({},state.search,{filter:action.filter})
+                });*/
+            default:
+                return state;
+        }
+    };
+    window.onload = function(){
+        let combinedReducer = Redux.combineReducers({
+            my:myReducer,
+            search:searchReducer
+        });
+        store=Redux.createStore(reducer,{
+            my:{max:4
+               },
+            search:{
+                data:["yoy", "React is a good good"],
+                filter:""
+            }
+            });
+        ReactDOM.render(<AllList/>,document.body);   
+    };
+
+    //Object assign(新物件,要複製的物件1,要複製的物件2)
+/*    let o ={x:3, y:4};
+    let o1 = Object.assign({},o,{x:10,z:5});
+    console.log(o1);*/
+    
+    </script>
+</head>
+
+<body>
+
+
+
+</body>
+
+</html>

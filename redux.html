@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Redux</title>
+    <script src="https://unpkg.com/redux@3.7.2/dist/redux.min.js"></script>
+    <script>
+        /*        const actionType = {
+                                    CHANGE_MAX: "ChangeMax"
+                                };
+                                // Reducer:建立狀態 store,用來儲存.管理狀態資料
+                                let store = Redux.createStore(function(state, action) {
+                                    switch (action.type) {
+                                        case actionType.CHANGE_MAX:
+                                            return {
+                                                max: action.max
+                                            };
+                                        default:
+                                            return state;
+                                    }
+
+
+                                }, {
+                                    max: 5
+                                });
+
+                                console.log(store.getState());
+
+                                let unsubscribe = store.subscribe(function() {
+                                    console.log("hello");
+                                });
+
+                                store.dispatch({
+                                    type: actionType.CHANGE_MAX,
+                                    max: 999
+                                });
+
+                                console.log(store.getState());
+                                
+                                unsubscribe();
+                                
+                                store.dispatch({
+                                    type: actionType.CHANGE_MAX,
+                                    max: 5566
+                                });
+
+                                console.log(store.getState());  */
+        let store;
+        window.onload = function() {
+            store = Redux.createStore(function(state, action) {
+                switch (action.type) {
+                    case "ChangeText":
+                        return {
+                            text: action.text
+                        };
+                    default:
+                        return state;
+                }
+            });
+
+            store.subscribe(function() {
+                document.body.textContent = store.getState().text;
+            });
+            store.dispatch({
+                type: "ChangeText",
+                text: "Hello Redux"
+            });
+            document.body.onclick = function() {
+                store.dispatch({
+                    type: "ChangeText",
+                    text: "Change Redux"
+                });
+            };
+        };
+
+    </script>
+</head>
+
+<body>
+
+
+
+</body>
+
+</html>
