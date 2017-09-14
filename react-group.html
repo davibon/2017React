@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>React-Redux</title>
+    <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <!--    Babel-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/redux@3.7.2/dist/redux.min.js"></script>
+    <style type="text/css">
+        .group{
+            width:300px;
+            height: 300px;
+            border:1px solid black;
+            margin: 10px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .group>.box{
+            width: 50px;
+            height: 50px;
+            background-color: coral;
+            margin: 5px;
+            display: inline-block;
+            vertical-align: top;
+        }
+    </style>
+    <script type="text/babel">
+    class Box extends React.Component{
+        constructor(props){
+            super(props);
+            this.state={
+                position: "static",
+                left:"auto", 
+                top:"auto"
+            };
+        }
+        render(){
+            return <div className="box" style={this.state} 
+            onMouseDown={this.drag.bind(this)}>{this.props.id}
+            </div>;
+        }
+        drag(e){
+            e.preventDefault();e.stopPropagation();
+            let box = e.currentTarget;
+            let start = {x:e.clientX,y:e.clientY};
+            let move = (e) =>{
+                this.setState({
+                    position:"relative",
+                    left:(e.clientX-start.x)+"px",
+                    top:(e.clientY-start.y)+"px",
+                });
+            };
+            let end = (e) => {
+                this.props.choose(box, this.props.id, this.props.index, this.props.groupIndex);
+                this.setState({
+                    position: "relative",
+                    left:"auto", top:"auto"
+                });
+                document.removeEventListener("mousemove",move);
+                document.removeEventListener("mouseup",end);               
+            };
+            document.addEventListener("mousemove",move);
+            document.addEventListener("mouseup",end);
+        }
+    }
+    class App extends React.Component{
+        constructor(props){
+            super(props);
+            this.areas = []; //記錄群組的div元件
+/*            this.state ={
+                count:1,
+                groups:[[],[]]
+            };*/
+            this.state=redux.store.getState();
+        }
+        render(){
+            let groups = [];
+            let boxes;
+            for(let i=0; i<this.state.groups.length;i++){
+                boxes = this.state.groups[i].map((value,index)=>{
+                    return <Box id={value} index={index} 
+                        groupIndex={i}
+                    choose={this.choose.bind(this)}/>;
+                });
+                groups.push(<div 
+                ref = {(element)=>{this.areas[i]=element;}}
+                className="group">{boxes}</div>);
+            }
+            return <div>
+                <button onClick={this.add.bind(this)}>Add</button><br/>
+                {groups}
+            </div>;
+        }
+        add(){
+            redux.store.dispatch({
+                type:redux.action.ADD_BOX
+            });
+/*            this.setState((currentState)=>{
+                currentState.groups[0].push(this.state.count);
+                return{
+                count:currentState.count+1,
+                groups:currentState.groups
+                };
+            });*/
+        }
+        choose(box, id, index, groupIndex){
+            redux.store.dispatch({
+                type:redux.action.CHANGE_GROUP,
+                areas:this.areas,
+                box:box,
+                id:id, index:index, groupIndex:groupIndex
+            });
+/*          
+            let rect = box.getBoundingClientRect();
+            let areaReact;
+            let targetIndex = -1;
+            for(let i=0; i< this.areas.length;i++){
+                areaReact=this.areas[i].getBoundingClientRect();
+                if(rect.left>areaReact.left && rect.top > areaReact.top 
+                  && rect.right<areaReact.right && rect.bottom < areaReact.bottom ){
+                    targetIndex = i;
+                    break;
+                }
+            }
+            if(targetIndex>-1){
+                this.setState((currentState)=>{
+                    //delete box from group
+                    currentState.groups[groupIndex].splice(index,1);
+                    currentState.groups[targetIndex].push(id);
+                    return {
+                        groups:currentState.groups
+                    }
+                });
+            }*/
+        }
+        update(){
+            this.setState(redux.store.getState());
+        }
+        
+        componentDidMount(){
+            this.unsubscribe = redux.store.subscribe(this.update.bind(this));
+        }
+        componentWillUnmount(){
+            this.unsubscribe();
+        }
+    }
+    let redux = {
+        store:null,
+        initState:{
+            count:1,
+            groups:[[],[]]        
+        },
+        reducer:function(currentState,action){
+            switch(action.type){
+                case redux.action.ADD_BOX:
+                    currentState.groups[0].push(currentState.count);
+                    return Object.assign({},currentState, {
+                        count:currentState.count+1,
+                        groups:currentState.groups
+                        });  
+                case redux.action.CHANGE_GROUP:
+                    let rect = action.box.getBoundingClientRect();
+                    let areaReact;
+                    let targetIndex = -1;
+                    for(let i=0; i< action.areas.length;i++){
+                        areaReact=action.areas[i].getBoundingClientRect();
+                    if(rect.left>areaReact.left && rect.top > areaReact.top 
+                        && rect.right<areaReact.right && rect.bottom < areaReact.bottom ){
+                        targetIndex = i;
+                        break;
+                        }
+                    }
+                if(targetIndex>-1){
+                    //delete box from group
+                    currentState.groups[action.groupIndex].splice(action.index,1);
+                    currentState.groups[targetIndex].push(action.id);
+                    return Object.assign({}, currentState, {
+                        groups:currentState.groups
+                    });
+                }else{
+                    return currentState;
+                }                    
+                    
+                    
+                default:
+                    return currentState;
+                }
+        },
+        action:{
+            ADD_BOX:"addBox",
+            CHANGE_GROUP:"changeGroup"
+        }
+    }
+    window.onload = function(){
+        redux.store=Redux.createStore(redux.reducer,redux.initState);
+        ReactDOM.render(<App/>,document.body);   
+    };
+
+    </script>
+</head>
+
+<body>
+
+
+
+</body>
+
+</html>
